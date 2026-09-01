@@ -20,3 +20,11 @@ class RunEvaluationResponse(BaseModel):
     evaluation_id: str
     status: str | None = None
     score: float | None = None
+
+
+class EvaluationResult(BaseModel):
+    evaluation_id: str
+    candidate_id: str
+    job_id: str
+    status: str
+    score: float | None = None
