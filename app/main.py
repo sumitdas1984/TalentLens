@@ -2,7 +2,11 @@ from fastapi import FastAPI, HTTPException, status
 
 from app.middleware import RequestMiddleware
 from app.models import EvaluationRequest, EvaluationResponse, RunEvaluationResponse
-from app.service import EvaluationService
+from app.service import (
+    EvaluationNotFound,
+    EvaluationService,
+    InvalidStateTransition,
+)
 
 app = FastAPI(
     title="Candidate Evaluation API",
@@ -52,11 +56,17 @@ async def get_evaluation(evaluation_id: str) -> EvaluationResponse:
     response_model=RunEvaluationResponse,
 )
 async def run_evaluation(evaluation_id: str) -> RunEvaluationResponse:
-    evaluation = await evaluation_service.run_evaluation(evaluation_id)
-    if evaluation is None:
+    try:
+        evaluation = await evaluation_service.run_evaluation(evaluation_id)
+    except EvaluationNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Evaluation '{evaluation_id}' not found.",
+        )
+    except InvalidStateTransition as exc:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=str(exc),
         )
     return RunEvaluationResponse(
         evaluation_id=evaluation["evaluation_id"],

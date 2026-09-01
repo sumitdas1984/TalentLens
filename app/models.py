@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class EvaluationRequest(BaseModel):
-    candidate_id: str
-    job_id: str
-    skills: list[str]
+    candidate_id: str = Field(..., min_length=1)
+    job_id: str = Field(..., min_length=1)
+    skills: list[str] = Field(..., min_length=1)
 
 
 class EvaluationResponse(BaseModel):

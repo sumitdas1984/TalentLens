@@ -1,6 +1,26 @@
 import asyncio
 
 
+class EvaluationNotFound(Exception):
+    """Raised when an evaluation ID does not exist."""
+
+    def __init__(self, evaluation_id: str):
+        self.evaluation_id = evaluation_id
+        super().__init__(f"Evaluation '{evaluation_id}' not found.")
+
+
+class InvalidStateTransition(Exception):
+    """Raised when an evaluation cannot move to the requested status."""
+
+    def __init__(self, evaluation_id: str, current_status: str):
+        self.evaluation_id = evaluation_id
+        self.current_status = current_status
+        super().__init__(
+            f"Evaluation '{evaluation_id}' cannot be run from status "
+            f"'{current_status}'."
+        )
+
+
 async def analyze_skills() -> float:
     """Simulate an I/O-bound skill analysis and return a score."""
     await asyncio.sleep(1)
@@ -52,16 +72,20 @@ class EvaluationService:
         """Retrieve an evaluation by its ID, or None if not found."""
         return self.evaluations.get(evaluation_id)
 
-    async def run_evaluation(self, evaluation_id: str) -> dict | None:
+    async def run_evaluation(self, evaluation_id: str) -> dict:
         """Run all analyzers concurrently and finalize the evaluation.
 
-        Returns None if the evaluation does not exist; otherwise updates the
-        stored evaluation with the averaged score and a status of
-        ``completed``.
+        Only ``pending`` evaluations can transition to ``running``. Raises
+        :class:`EvaluationNotFound` if the ID is unknown and
+        :class:`InvalidStateTransition` if the evaluation is already
+        ``running`` or ``completed``.
         """
         evaluation = self.evaluations.get(evaluation_id)
         if evaluation is None:
-            return None
+            raise EvaluationNotFound(evaluation_id)
+
+        if evaluation["status"] != "pending":
+            raise InvalidStateTransition(evaluation_id, evaluation["status"])
 
         evaluation["status"] = "running"
 
