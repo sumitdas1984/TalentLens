@@ -49,7 +49,7 @@ async def get_evaluation(evaluation_id: str) -> EvaluationResponse:
     response_model=RunEvaluationResponse,
 )
 async def run_evaluation(evaluation_id: str) -> RunEvaluationResponse:
-    evaluation = evaluation_service.start_evaluation(evaluation_id)
+    evaluation = await evaluation_service.run_evaluation(evaluation_id)
     if evaluation is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -58,4 +58,5 @@ async def run_evaluation(evaluation_id: str) -> RunEvaluationResponse:
     return RunEvaluationResponse(
         evaluation_id=evaluation["evaluation_id"],
         status=evaluation["status"],
+        score=evaluation["score"],
     )

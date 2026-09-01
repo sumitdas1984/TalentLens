@@ -19,3 +19,4 @@ class EvaluationResponse(BaseModel):
 class RunEvaluationResponse(BaseModel):
     evaluation_id: str
     status: str | None = None
+    score: float | None = None
