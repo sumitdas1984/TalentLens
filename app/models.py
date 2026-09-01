@@ -14,3 +14,8 @@ class EvaluationResponse(BaseModel):
     skills: list[str]
     status: str
     score: float | None = None
+
+
+class RunEvaluationResponse(BaseModel):
+    evaluation_id: str
+    status: str | None = None

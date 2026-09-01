@@ -30,3 +30,11 @@ class EvaluationService:
     def get_evaluation(self, evaluation_id: str) -> dict | None:
         """Retrieve an evaluation by its ID, or None if not found."""
         return self.evaluations.get(evaluation_id)
+
+    def start_evaluation(self, evaluation_id: str) -> dict | None:
+        """Mark an evaluation as running. Returns None if not found."""
+        evaluation = self.evaluations.get(evaluation_id)
+        if evaluation is None:
+            return None
+        evaluation["status"] = "running"
+        return evaluation
