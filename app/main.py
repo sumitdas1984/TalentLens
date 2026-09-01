@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, status
 
+from app.middleware import RequestMiddleware
 from app.models import EvaluationRequest, EvaluationResponse, RunEvaluationResponse
 from app.service import EvaluationService
 
@@ -7,6 +8,8 @@ app = FastAPI(
     title="Candidate Evaluation API",
     version="1.0.0"
 )
+
+app.add_middleware(RequestMiddleware)
 
 evaluation_service = EvaluationService()
 
