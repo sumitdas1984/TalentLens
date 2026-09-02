@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, status
 
 from app.middleware import RequestMiddleware
-from app.models import EvaluationRequest, EvaluationResponse, RunEvaluationResponse
+from app.models import EvaluationRequest, EvaluationResponse, EvaluationSummary
 from app.service import (
     EvaluationNotFound,
     EvaluationService,
@@ -53,9 +53,9 @@ async def get_evaluation(evaluation_id: str) -> EvaluationResponse:
 
 @app.post(
     "/evaluations/{evaluation_id}/run",
-    response_model=RunEvaluationResponse,
+    response_model=EvaluationSummary,
 )
-async def run_evaluation(evaluation_id: str) -> RunEvaluationResponse:
+async def run_evaluation(evaluation_id: str) -> EvaluationSummary:
     try:
         evaluation = await evaluation_service.run_evaluation(evaluation_id)
     except EvaluationNotFound:
@@ -68,8 +68,10 @@ async def run_evaluation(evaluation_id: str) -> RunEvaluationResponse:
             status_code=status.HTTP_409_CONFLICT,
             detail=str(exc),
         )
-    return RunEvaluationResponse(
+    return EvaluationSummary(
         evaluation_id=evaluation["evaluation_id"],
+        candidate_id=evaluation["candidate_id"],
+        job_id=evaluation["job_id"],
         status=evaluation["status"],
         score=evaluation["score"],
     )

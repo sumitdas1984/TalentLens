@@ -1,6 +1,6 @@
 from fastmcp import FastMCP
 
-from app.models import EvaluationResult
+from app.models import EvaluationSummary
 from app.service import EvaluationService
 
 mcp = FastMCP("Candidate Evaluation Server")
@@ -13,7 +13,7 @@ async def evaluate_candidate(
     candidate_id: str,
     job_id: str,
     skills: list[str],
-) -> EvaluationResult:
+) -> EvaluationSummary:
     """Evaluate a candidate against a job and return the evaluation result."""
     evaluation = _service.create_evaluation(
         candidate_id=candidate_id,
@@ -21,7 +21,7 @@ async def evaluate_candidate(
         skills=skills,
     )
     completed = await _service.run_evaluation(evaluation["evaluation_id"])
-    return EvaluationResult(
+    return EvaluationSummary(
         evaluation_id=completed["evaluation_id"],
         candidate_id=completed["candidate_id"],
         job_id=completed["job_id"],
@@ -31,12 +31,12 @@ async def evaluate_candidate(
 
 
 @mcp.tool()
-async def get_evaluation(evaluation_id: str) -> EvaluationResult:
+async def get_evaluation(evaluation_id: str) -> EvaluationSummary:
     """Retrieve an existing candidate evaluation by its ID."""
     evaluation = _service.get_evaluation(evaluation_id)
     if evaluation is None:
         raise ValueError(f"Evaluation '{evaluation_id}' not found.")
-    return EvaluationResult(
+    return EvaluationSummary(
         evaluation_id=evaluation["evaluation_id"],
         candidate_id=evaluation["candidate_id"],
         job_id=evaluation["job_id"],

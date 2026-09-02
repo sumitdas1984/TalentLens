@@ -16,13 +16,13 @@ class EvaluationResponse(BaseModel):
     score: float | None = None
 
 
-class RunEvaluationResponse(BaseModel):
-    evaluation_id: str
-    status: str | None = None
-    score: float | None = None
+class EvaluationSummary(BaseModel):
+    """Compact evaluation record returned by the /run endpoint and MCP tools.
 
+    Omits ``skills`` because the caller already supplied them when the
+    evaluation was created.
+    """
 
-class EvaluationResult(BaseModel):
     evaluation_id: str
     candidate_id: str
     job_id: str
