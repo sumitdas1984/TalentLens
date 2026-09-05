@@ -9,7 +9,7 @@ from app.service import (
 )
 
 app = FastAPI(
-    title="Candidate Evaluation API",
+    title="TalentLens API",
     version="1.0.0"
 )
 

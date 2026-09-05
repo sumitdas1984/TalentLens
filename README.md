@@ -1,4 +1,4 @@
-# Candidate Eval API
+# TalentLens
 
 A lightweight backend service for evaluating candidates against job requirements using **FastAPI, asynchronous Python, and MCP (Model Context Protocol)**.
 
@@ -6,7 +6,7 @@ The project demonstrates how to build a production-style AI/backend service wher
 
 ## 🎯 Project Overview
 
-Candidate Eval API simulates an AI-powered candidate evaluation system.
+TalentLens simulates an AI-powered candidate evaluation system.
 
 A client can submit a candidate and job information, trigger an evaluation, and retrieve the evaluation result through REST APIs.
 
@@ -67,7 +67,7 @@ An AI agent can perform similar operations through MCP tools.
 ## 📁 Repository Structure
 
 ```text
-candidate-eval-api/
+TalentLens/
 │
 ├── app/
 │   ├── __init__.py
@@ -102,8 +102,8 @@ Both FastAPI and MCP are intended to use the same service layer rather than dupl
 ### 1. Clone the repository
 
 ```bash
-git clone <repository-url>
-cd candidate-eval-api
+git clone https://github.com/sumitdas1984/TalentLens.git
+cd TalentLens
 ```
 
 ### 2. Create a virtual environment

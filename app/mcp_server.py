@@ -3,7 +3,7 @@ from fastmcp import FastMCP
 from app.models import EvaluationSummary
 from app.service import EvaluationService
 
-mcp = FastMCP("Candidate Evaluation Server")
+mcp = FastMCP("TalentLens Server")
 
 _service = EvaluationService()
 
