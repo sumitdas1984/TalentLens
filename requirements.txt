@@ -2,6 +2,8 @@ fastapi
 uvicorn
 pydantic
 fastmcp
+openai
+python-dotenv
 pytest
 pytest-asyncio
 httpx

@@ -1,12 +1,18 @@
 from fastapi import FastAPI, HTTPException, status
 
+from app.agent import Agent
 from app.middleware import RequestMiddleware
-from app.models import EvaluationRequest, EvaluationResponse, EvaluationSummary
+from app.models import (
+    ChatRequest,
+    EvaluationRequest,
+    EvaluationResponse,
+    EvaluationSummary,
+)
 from app.service import (
     EvaluationNotFound,
-    EvaluationService,
     InvalidStateTransition,
 )
+from app.state import evaluation_service
 
 app = FastAPI(
     title="Candidate Evaluation API",
@@ -15,7 +21,8 @@ app = FastAPI(
 
 app.add_middleware(RequestMiddleware)
 
-evaluation_service = EvaluationService()
+# Module-level Agent; tests monkeypatch ``app.main.agent`` with a fake.
+agent = Agent()
 
 
 @app.get("/health")
@@ -75,3 +82,9 @@ async def run_evaluation(evaluation_id: str) -> EvaluationSummary:
         status=evaluation["status"],
         score=evaluation["score"],
     )
+
+
+@app.post("/chat")
+async def chat(request: ChatRequest) -> dict[str, str]:
+    response = await agent.run(request.message)
+    return {"response": response}
