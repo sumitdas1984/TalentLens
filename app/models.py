@@ -1,6 +1,10 @@
 from pydantic import BaseModel, Field
 
 
+class ChatRequest(BaseModel):
+    message: str = Field(..., min_length=1)
+
+
 class EvaluationRequest(BaseModel):
     candidate_id: str = Field(..., min_length=1)
     job_id: str = Field(..., min_length=1)

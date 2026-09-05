@@ -1,11 +1,9 @@
 from fastmcp import FastMCP
 
 from app.models import EvaluationSummary
-from app.service import EvaluationService
+from app.state import evaluation_service
 
 mcp = FastMCP("TalentLens Server")
-
-_service = EvaluationService()
 
 
 @mcp.tool()
@@ -15,12 +13,12 @@ async def evaluate_candidate(
     skills: list[str],
 ) -> EvaluationSummary:
     """Evaluate a candidate against a job and return the evaluation result."""
-    evaluation = _service.create_evaluation(
+    evaluation = evaluation_service.create_evaluation(
         candidate_id=candidate_id,
         job_id=job_id,
         skills=skills,
     )
-    completed = await _service.run_evaluation(evaluation["evaluation_id"])
+    completed = await evaluation_service.run_evaluation(evaluation["evaluation_id"])
     return EvaluationSummary(
         evaluation_id=completed["evaluation_id"],
         candidate_id=completed["candidate_id"],
@@ -33,7 +31,7 @@ async def evaluate_candidate(
 @mcp.tool()
 async def get_evaluation(evaluation_id: str) -> EvaluationSummary:
     """Retrieve an existing candidate evaluation by its ID."""
-    evaluation = _service.get_evaluation(evaluation_id)
+    evaluation = evaluation_service.get_evaluation(evaluation_id)
     if evaluation is None:
         raise ValueError(f"Evaluation '{evaluation_id}' not found.")
     return EvaluationSummary(
